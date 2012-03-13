@@ -1,6 +1,6 @@
 fs = require 'fs'
 {print} = require 'util'
-{spawn, exec} = require 'child_process'
+{spawn} = require 'child_process'
 jasmineBinary = './node_modules/jasmine-node/bin/jasmine-node'
 
 # ANSI Terminal Colors

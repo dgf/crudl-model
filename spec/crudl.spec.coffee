@@ -2,10 +2,9 @@ Sequelize = require 'sequelize'
 path = require 'path'
 
 {aCheck, aFail} = require './helper/check'
-db = require './helper/db'
 crudl = require '../src/crudl'
-
-Term = require('./Term') db.createSqliteMemoryDb()
+db = require('./helper/db').createSqliteMemoryDb()
+Term = crudl require('./Term') db
 
 FAST = 20
 OK = 70
@@ -21,15 +20,12 @@ terms =
     definition: 'rental agreement, tenants, ...'
 
 # attention: stateful test spec, beware of right order
-describe 'crudle Sequelize model', ->
+describe 'crudle Sequelize term model', ->
 #
-  SUT = null
-
   it 'needs a synchronisable model', ->
-    SUT = crudl Term
     aCheck 'crudl term and sync model', (done) =>
       success = (actual) -> expect(actual).toBeTruthy 'sync state'; done()
-      SUT.reset success, aFail(@, done)
+      Term.reset success, aFail(@, done)
 
   it 'creates a new term', ->
     aCheck 'create new term', (done) =>
@@ -37,13 +33,13 @@ describe 'crudle Sequelize model', ->
         expect(actual.id).toBeDefined 'term id'
         expect(actual.title).toBe terms.t1.title, 'term title'
         done()
-      SUT.create terms.t1, success, aFail(@, done)
+      Term.create terms.t1, success, aFail(@, done)
 
   it 'finds a term', ->
     q = where: title: terms.t1.title
     aCheck 'find term', (done) =>
       success = (actual) -> expect(actual.title).toBe terms.t1.title, 'term title'; done()
-      SUT.find q, success, aFail(@, done)
+      Term.find q, success, aFail(@, done)
 
   it 'persists a new term', ->
     q = where: title: 'not exists'
@@ -52,13 +48,13 @@ describe 'crudle Sequelize model', ->
         expect(actual.id).toBeDefined 'term id'
         expect(actual.title).toBe terms.t2.title, 'term title'
         done()
-      SUT.persist q, terms.t2, success, aFail(@, done)
+      Term.persist q, terms.t2, success, aFail(@, done)
 
   it 'returns only the first instance of an inaccurate find query', ->
     q = limit: 2
     aCheck 'find term', (done) =>
       success = (actual) -> expect(actual.title).toBe terms.t1.title, 'term title'; done()
-      SUT.find q, success, aFail(@, done)
+      Term.find q, success, aFail(@, done)
 
   it 'persists changes of an existing term', ->
     values = definition: 'a new term desfinition'
@@ -69,14 +65,14 @@ describe 'crudle Sequelize model', ->
         expect(actual.title).toBe terms.t2.title, 'term title'
         expect(actual.definition).toBe values.definition, 'term definition'
         done()
-      SUT.persist q, values, success, aFail(@, done)
+      Term.persist q, values, success, aFail(@, done)
 
   it 'persists only valid changes', ->
     values = definition: null
     q = where: title: terms.t2.title
     aCheck 'persist invalid term changes', (done) =>
       success = => @fail 'invalid changes persisted'; done()
-      SUT.persist q, values, success, (msg, errors) ->
+      Term.persist q, values, success, (msg, errors) ->
         expect(msg).toBe 'validation failed'
         expect(errors.definition).toBeDefined 'invalid definition'
         for own prop, propErrors of errors # implicit error structure test
@@ -93,13 +89,13 @@ describe 'crudle Sequelize model', ->
         expect(actual.description).toBeDefined 'unknown instance property'
         expect(actual.description).toBe values.description, 'term desciption'
         done()
-      SUT.persist q, values, success, aFail(@, done)
+      Term.persist q, values, success, aFail(@, done)
 
   it 'does not persist unknown properties', ->
     q = where: title: terms.t2.title
     aCheck 'retrieve the original term without a description', (done) =>
       success = (actual) -> expect(actual.description).not.toBeDefined 'unknown property'; done()
-      SUT.find q, success, aFail(@, done)
+      Term.find q, success, aFail(@, done)
 
   it 'updates an existing term', ->
     values = desc: 'another desc'
@@ -110,7 +106,7 @@ describe 'crudle Sequelize model', ->
         expect(actual.title).toBe terms.t2.title, 'term title'
         expect(actual.desc).toBe values.desc, 'term description'
         done()
-      SUT.update q, values, success, aFail(@, done)
+      Term.update q, values, success, aFail(@, done)
 
   it 'lists all terms', ->
     aCheck 'list all terms', (done) =>
@@ -118,12 +114,12 @@ describe 'crudle Sequelize model', ->
         expect(actual.length).toBe 2, 'term count'
         expect(actual[1].title).toBe terms.t2.title, 'term title'
         done()
-      SUT.all success, aFail(@, done)
+      Term.all success, aFail(@, done)
 
   it 'counts all terms', ->
     aCheck 'count all terms', (done) =>
       success = (actual) -> expect(actual).toBe 2, 'term count'; done()
-      SUT.count success, aFail(@, done)
+      Term.count success, aFail(@, done)
 
   it 'lists filtered terms', ->
     q = where: title: terms.t1.title
@@ -132,16 +128,16 @@ describe 'crudle Sequelize model', ->
         expect(actual.length).toBe 1, 'term count'
         expect(actual[0].title).toBe terms.t1.title, 'term title'
         done()
-      SUT.list q, success, aFail(@, done)
+      Term.list q, success, aFail(@, done)
 
   it 'not deletes more than one term', ->  # it only deletes the first instance
     q = limit: 2
     aCheck 'delete term', (done) =>
       success = (actual) -> expect(actual.id).toBe 1; done()
-      SUT.delete q, success, aFail(@, done)
+      Term.delete q, success, aFail(@, done)
 
   it 'deletes an existing term', ->
     q = where: title: terms.t2.title
     aCheck 'delete term', (done) =>
       success = (actual) -> expect(actual.id).toBe 2; done()
-      SUT.delete q, success, aFail(@, done)
+      Term.delete q, success, aFail(@, done)

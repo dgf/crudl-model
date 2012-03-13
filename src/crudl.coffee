@@ -57,6 +57,10 @@ module.exports = (model) ->
         instance = model.build values
       validateAndSave instance, onSuccess, onError
 
+  # count all instances
+  interface.count = (onSuccess, onError) ->
+    model.count().success(onSuccess).error(onError)
+
   # drop table and recreate structure
   interface.reset = (onSuccess, onError) ->
     model.sync(force: true).success(onSuccess).error(onError)

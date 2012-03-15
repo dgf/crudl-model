@@ -6,12 +6,12 @@ Term = require('./Term') db
 
 # test data
 terms =
-  t1:
-    title: 'RealEstate'
-    definition: 'a real estate, property, ...'
-  t2:
-    title: 'Agreement'
-    definition: 'rental agreement, tenants, ...'
+  API:
+    title: 'API'
+    definition: 'Application Programming Interface'
+  GUI:
+    title: 'GUI'
+    definition: 'Graphical User Interface'
 
 # attention: stateful API spec, beware of right order
 describe 'Sequelize model API', ->
@@ -24,14 +24,14 @@ describe 'Sequelize model API', ->
 
   it 'builds and saves an instance', ->
     aCheck 'build and save an instance', (done) =>
-      Term.build(terms.t1).save().error(aFail @, done).success (actual) ->
-        expect(actual.title).toBe terms.t1.title, 'term title'
+      Term.build(terms.API).save().error(aFail @, done).success (actual) ->
+        expect(actual.title).toBe terms.API.title, 'term title'
         done()
 
   it 'builds and saves another instance', ->
     aCheck 'build and save another instance', (done) =>
-      Term.build(terms.t2).save().error(aFail @, done).success (actual) ->
-        expect(actual.title).toBe terms.t2.title, 'term title'
+      Term.build(terms.GUI).save().error(aFail @, done).success (actual) ->
+        expect(actual.title).toBe terms.GUI.title, 'term title'
         done()
 
   describe 'Sequelize SQL API', ->
@@ -42,8 +42,8 @@ describe 'Sequelize model API', ->
         db.query(q, Term).error(aFail @, done).success (actual) ->
           expect(actual).toBeDefined 'SQL result'
           expect(actual.length).toBe 2, 'terms found'
-          expect(actual[0]?.title).toBe terms.t1.title, 'title of first result'
-          expect(actual[1]?.title).toBe terms.t2.title, 'title of second result'
+          expect(actual[0]?.title).toBe terms.API.title, 'title of first result'
+          expect(actual[1]?.title).toBe terms.GUI.title, 'title of second result'
           done()
 
     it 'handles SQL failures', ->

@@ -12,67 +12,79 @@ SLOW = 500
 
 # test data
 terms =
-  t1:
-    title: 'RealEstate'
-    definition: 'a real estate, property, ...'
-  t2:
-    title: 'Agreement'
-    definition: 'rental agreement, tenants, ...'
+  API:
+    title: 'API'
+    definition: 'Application Programming Interface'
+  GUI:
+    title: 'GUI'
+    definition: 'Graphical User Interface'
+  POSIX:
+    title: 'POSIX'
+    definition: 'Portable Operating System for UNIX'
 
 # attention: stateful test spec, beware of right order
 describe 'crudle Sequelize term model', ->
 #
   it 'needs a synchronisable model', ->
-    aCheck 'crudl term and sync model', (done) =>
-      success = (actual) -> expect(actual).toBeTruthy 'sync state'; done()
-      Term.reset success, aFail(@, done)
+    test = (done) =>
+      assert = (actual) -> expect(actual).toBeTruthy 'sync state'; done()
+      Term.reset assert, aFail(@, done)
+    aCheck 'crudl term and sync model', test, OK
 
   it 'creates a new term', ->
     aCheck 'create new term', (done) =>
-      success = (actual) ->
+      assert = (actual) ->
         expect(actual.id).toBeDefined 'term id'
-        expect(actual.title).toBe terms.t1.title, 'term title'
+        expect(actual.title).toBe terms.API.title, 'term title'
         done()
-      Term.create terms.t1, success, aFail(@, done)
+      Term.create terms.API, assert, aFail(@, done)
+
+  it 'creates another term', ->
+    aCheck 'create another term', (done) =>
+      assert = (actual) ->
+        expect(actual.id).toBeDefined 'term id'
+        expect(actual.title).toBe terms.POSIX.title, 'term title'
+        done()
+      Term.create terms.POSIX, assert, aFail(@, done)
 
   it 'finds a term', ->
-    q = where: title: terms.t1.title
+    q = where: title: terms.API.title
     aCheck 'find term', (done) =>
-      success = (actual) -> expect(actual.title).toBe terms.t1.title, 'term title'; done()
-      Term.find q, success, aFail(@, done)
+      assert = (actual) -> expect(actual.title).toBe terms.API.title, 'term title'; done()
+      Term.find q, assert, aFail(@, done)
 
   it 'persists a new term', ->
     q = where: title: 'not exists'
     aCheck 'persist new term', (done) =>
-      success = (actual) ->
+      assert = (actual) ->
         expect(actual.id).toBeDefined 'term id'
-        expect(actual.title).toBe terms.t2.title, 'term title'
+        expect(actual.title).toBe terms.GUI.title, 'term title'
         done()
-      Term.persist q, terms.t2, success, aFail(@, done)
+      Term.persist q, terms.GUI, assert, aFail(@, done)
 
   it 'returns only the first instance of an inaccurate find query', ->
     q = limit: 2
     aCheck 'find term', (done) =>
-      success = (actual) -> expect(actual.title).toBe terms.t1.title, 'term title'; done()
-      Term.find q, success, aFail(@, done)
+      assert = (actual) -> expect(actual.title).toBe terms.API.title, 'term title'; done()
+      Term.find q, assert, aFail(@, done)
 
   it 'persists changes of an existing term', ->
     values = definition: 'a new term desfinition'
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'persist existing term changes', (done) =>
-      success = (actual) ->
+      assert = (actual) ->
         expect(actual.id).toBeDefined 'term id'
-        expect(actual.title).toBe terms.t2.title, 'term title'
+        expect(actual.title).toBe terms.GUI.title, 'term title'
         expect(actual.definition).toBe values.definition, 'term definition'
         done()
-      Term.persist q, values, success, aFail(@, done)
+      Term.persist q, values, assert, aFail(@, done)
 
   it 'persists only valid changes', ->
     values = definition: null
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'persist invalid term changes', (done) =>
-      success = => @fail 'invalid changes persisted'; done()
-      Term.persist q, values, success, (msg, errors) ->
+      assert = => @fail 'invalid changes persisted'; done()
+      Term.persist q, values, assert, (msg, errors) ->
         expect(msg).toBe 'validation failed'
         expect(errors.definition).toBeDefined 'invalid definition'
         for own prop, propErrors of errors # implicit error structure test
@@ -81,63 +93,70 @@ describe 'crudle Sequelize term model', ->
 
   it 'ignores unknown properties', ->
     values = description: 'an unknown instance description'
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'persist existing term without changes', (done) =>
-      success = (actual) ->
+      assert = (actual) ->
         expect(actual.id).toBeDefined 'term id'
-        expect(actual.title).toBe terms.t2.title, 'term title'
+        expect(actual.title).toBe terms.GUI.title, 'term title'
         expect(actual.description).toBeDefined 'unknown instance property'
         expect(actual.description).toBe values.description, 'term desciption'
         done()
-      Term.persist q, values, success, aFail(@, done)
+      Term.persist q, values, assert, aFail(@, done)
 
   it 'does not persist unknown properties', ->
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'retrieve the original term without a description', (done) =>
-      success = (actual) -> expect(actual.description).not.toBeDefined 'unknown property'; done()
-      Term.find q, success, aFail(@, done)
+      assert = (actual) -> expect(actual.description).not.toBeDefined 'unknown property'; done()
+      Term.find q, assert, aFail(@, done)
 
   it 'updates an existing term', ->
     values = desc: 'another desc'
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'update existing term', (done) =>
-      success = (actual) ->
-        expect(actual).not.toBe terms.t2, 'a fresh object'
-        expect(actual.title).toBe terms.t2.title, 'term title'
+      assert = (actual) ->
+        expect(actual).not.toBe terms.GUI, 'a fresh object'
+        expect(actual.title).toBe terms.GUI.title, 'term title'
         expect(actual.desc).toBe values.desc, 'term description'
         done()
-      Term.update q, values, success, aFail(@, done)
+      Term.update q, values, assert, aFail(@, done)
 
   it 'lists all terms', ->
     aCheck 'list all terms', (done) =>
-      success = (actual) ->
-        expect(actual.length).toBe 2, 'term count'
-        expect(actual[1].title).toBe terms.t2.title, 'term title'
+      assert = (actual) ->
+        expect(actual.length).toBe 3, 'term count'
+        expect(actual[2].title).toBe terms.GUI.title, 'term title'
         done()
-      Term.all success, aFail(@, done)
+      Term.all assert, aFail(@, done)
 
   it 'counts all terms', ->
     aCheck 'count all terms', (done) =>
-      success = (actual) -> expect(actual).toBe 2, 'term count'; done()
-      Term.count success, aFail(@, done)
+      assert = (actual) -> expect(actual).toBe 3, 'term count'; done()
+      Term.count assert, aFail(@, done)
 
   it 'lists filtered terms', ->
-    q = where: title: terms.t1.title
+    q = where: title: terms.API.title
     aCheck 'filter terms', (done) =>
-      success = (actual) ->
+      assert = (actual) ->
         expect(actual.length).toBe 1, 'term count'
-        expect(actual[0].title).toBe terms.t1.title, 'term title'
+        expect(actual[0].title).toBe terms.API.title, 'term title'
         done()
-      Term.list q, success, aFail(@, done)
+      Term.list q, assert, aFail(@, done)
 
-  it 'not deletes more than one term', ->  # it only deletes the first instance
+  it 'not deletes more than one term', ->  # only deletes the first instance
     q = limit: 2
     aCheck 'delete term', (done) =>
-      success = (actual) -> expect(actual.id).toBe 1; done()
-      Term.delete q, success, aFail(@, done)
+      assert = (actual) -> expect(actual.id).toBe 1; done()
+      Term.delete q, assert, aFail(@, done)
 
   it 'deletes an existing term', ->
-    q = where: title: terms.t2.title
+    q = where: title: terms.GUI.title
     aCheck 'delete term', (done) =>
-      success = (actual) -> expect(actual.id).toBe 2; done()
-      Term.delete q, success, aFail(@, done)
+      assert = (actual) -> expect(actual.id).toBe 3; done()
+      Term.delete q, assert, aFail(@, done)
+
+  it 'clears the table', ->
+    aCheck 'clear terms', (done) =>
+      assert = =>
+        countAssert = (count) -> expect(count).toBe 0; done()
+        Term.count countAssert, aFail(@, done)
+      Term.clear assert, aFail(@, done)

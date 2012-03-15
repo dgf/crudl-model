@@ -1,5 +1,6 @@
 # Sequelize CreateReadUpdateDeleteList delegate (API improvement)
 _ = require 'underscore'
+Sequelize = require 'sequelize'
 
 validateAndSave = (instance, onSuccess, onError) ->
   errors = instance.validate()
@@ -13,6 +14,9 @@ findAndExecute = (model, options, onError, onSuccess) ->
 
 findAll = (model, options, onSuccess, onError)->
   model.all(options).error(onError).success (instances) -> onSuccess _.toArray(instances)
+
+rawQuery = (model, query, onSuccess, onError) ->
+  model.daoFactoryManager.sequelize.query(query, null, raw: true).success(onSuccess).error(onError)
 
 module.exports = (model) ->
   interface = {}
@@ -64,6 +68,10 @@ module.exports = (model) ->
   # drop table and recreate structure
   interface.reset = (onSuccess, onError) ->
     model.sync(force: true).success(onSuccess).error(onError)
+
+  # truncate table
+  interface.clear = (onSuccess, onError) ->
+    rawQuery model, 'DELETE FROM ' + model.tableName, onSuccess, onError
 
   # export model interface
   interface

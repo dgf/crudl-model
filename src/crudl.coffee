@@ -32,13 +32,19 @@ module.exports = (model) ->
   # find, update, validate and save
   interface.update = (options, values, onSuccess, onError) ->
     findAndExecute model, options, onError, (instance) ->
-      instance[prop] = value for own prop, value of values
-      validateAndSave instance, onSuccess, onError
+      if not instance?
+        onError 'nothing found'
+      else
+        instance[prop] = value for own prop, value of values
+        validateAndSave instance, onSuccess, onError
 
   # find and destroy
   interface.delete = (options, onSuccess, onError) ->
     findAndExecute model, options, onError, (instance) ->
-      instance.destroy().error(onError).success(onSuccess)
+      if instance?
+        instance.destroy().error(onError).success(onSuccess)
+      else
+        onError 'nothing found'
 
   # find an instance
   interface.find = (options, onSuccess, onError) ->

@@ -120,6 +120,15 @@ describe 'crudle Sequelize term model', ->
         done()
       Term.update q, values, assert, aFail(@, done)
 
+  it 'fails on update of an unknown term', ->
+    q = where: title: 'unknown'
+    values = desc: 'unknown term'
+    aCheck 'update unknown term', (done) =>
+      assert = => @fail 'some term updated'; done()
+      Term.update q, values, assert, (error) ->
+        expect(error).toBeDefined 'an error'
+        done()
+
   it 'lists all terms', ->
     aCheck 'list all terms', (done) =>
       assert = (actual) ->
@@ -153,6 +162,14 @@ describe 'crudle Sequelize term model', ->
     aCheck 'delete term', (done) =>
       assert = (actual) -> expect(actual.id).toBe 3; done()
       Term.delete q, assert, aFail(@, done)
+
+  it 'fails on delete of an unknown term', ->
+    q = where: title: 'unknown'
+    aCheck 'delete unknown term', (done) =>
+      assert = => @fail 'some term deleted'; done()
+      Term.delete q, assert, (error) ->
+        expect(error).toBeDefined 'an error'
+        done()
 
   it 'clears the table', ->
     aCheck 'clear terms', (done) =>

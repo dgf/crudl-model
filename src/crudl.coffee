@@ -79,5 +79,8 @@ module.exports = (model) ->
   interface.clear = (onSuccess, onError) ->
     rawQuery model, 'DELETE FROM ' + model.tableName, onSuccess, onError
 
+  # return table name
+  interface.table = model.tableName
+
   # export model interface
   interface

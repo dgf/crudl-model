@@ -2,9 +2,8 @@ Sequelize = require 'sequelize'
 path = require 'path'
 
 {aCheck, aFail} = require './helper/check'
+dbFactory = require './helper/db'
 crudl = require '../src/crudl'
-db = require('./helper/db').createSqliteMemoryDb()
-Term = crudl require('./Term') db
 
 FAST = 20
 OK = 70
@@ -23,7 +22,7 @@ terms =
     definition: 'Portable Operating System for UNIX'
 
 # attention: stateful test spec, beware of right order
-describe 'crudle Sequelize term model', ->
+spec = (Term) ->
 #
   it 'needs a synchronisable model', ->
     test = (done) =>
@@ -177,3 +176,12 @@ describe 'crudle Sequelize term model', ->
         countAssert = (count) -> expect(count).toBe 0; done()
         Term.count countAssert, aFail(@, done)
       Term.clear assert, aFail(@, done)
+
+  it 'returns the table name', ->
+    expect(Term.table).toBe 'Terms'
+
+runSpec = (db) ->
+  describe 'Sequelize term model', -> spec crudl require('./Term') db
+
+describe 'crudle MySQL', -> runSpec dbFactory.createMysqlDb()
+describe 'crudle sqlite3', -> runSpec dbFactory.createSqliteMemoryDb()

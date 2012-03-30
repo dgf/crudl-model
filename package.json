@@ -5,7 +5,6 @@
 
   , "keywords": ["Sequelize", "ORM", "CRUD", "coffeescript"]
   , "description": "coffeescript friendly Sequelize CRUD delegate (API improvement)"
-  , "homepage": "http://github.com/dgf/crudl-model"
   , "main": "lib/crudl.js"
 
   , "licenses": [{

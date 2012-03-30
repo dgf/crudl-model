@@ -1,6 +1,6 @@
 {
     "name": "crudl-model"
-  , "version": "0.0.2"
+  , "version": "0.0.3"
   , "author": "Danny Gräf <github@dagnu.de>"
 
   , "keywords": ["Sequelize", "ORM", "CRUD", "coffeescript"]
@@ -14,7 +14,7 @@
   }]
   , "repository": {
       "type": "git"
-    , "url": "git@github.com:dgf/crudl-model.git"
+    , "url": "git://github.com/dgf/crudl-model.git"
   }
 
   , "dependencies": {
@@ -27,9 +27,10 @@
     , "sqlite3": "2.1.x"
   }
 
-  , "engine": {
-      "node": "0.6.x"
+  , "engines": {
+      "node": "~0.6.7"
   }
+
   , "scripts": {
       "pretest": "cake build"
     , "prepublish": "cake build"

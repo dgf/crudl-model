@@ -1,6 +1,5 @@
 # Sequelize CreateReadUpdateDeleteList delegate (API improvement)
 _ = require 'underscore'
-Sequelize = require 'sequelize'
 
 validateAndSave = (instance, onSuccess, onError) ->
   errors = instance.validate()

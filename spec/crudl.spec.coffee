@@ -52,6 +52,13 @@ spec = (Term) ->
       assert = (actual) -> expect(actual.title).toBe terms.API.title, 'term title'; done()
       Term.find q, assert, aFail(@, done)
 
+  it 'fails for an empty query', ->
+    aCheck 'call with null query', (done) =>
+      assert = => @fail 'query executed'; done()
+      Term.find null, assert, (error) ->
+        expect(error).toBeDefined 'an error'
+        done()
+
   it 'persists a new term', ->
     q = where: title: 'not exists'
     aCheck 'persist new term', (done) =>

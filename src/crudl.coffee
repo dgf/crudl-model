@@ -10,7 +10,10 @@ validateAndSave = (instance, onSuccess, onError) ->
     instance.save().success(onSuccess).error(onError)
 
 findAndExecute = (model, options, onError, onSuccess) ->
-  model.find(options).error(onError).success(onSuccess)
+  if options?
+    model.find(options).error(onError).success(onSuccess)
+  else
+    onError 'empty find query'
 
 findAll = (model, options, onSuccess, onError)->
   model.all(options).error(onError).success (instances) -> onSuccess _.toArray(instances)

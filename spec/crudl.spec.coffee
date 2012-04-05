@@ -1,5 +1,4 @@
 Sequelize = require 'sequelize'
-path = require 'path'
 
 {aCheck, aFail} = require './helper/check'
 dbFactory = require './helper/db'

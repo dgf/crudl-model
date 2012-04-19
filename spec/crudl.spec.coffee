@@ -25,7 +25,7 @@ spec = (Term) ->
 #
   it 'needs a synchronisable model', ->
     test = (done) =>
-      assert = (actual) -> expect(actual).toBeTruthy 'sync state'; done()
+      assert = (actual) -> expect(actual).toBeTruthy 'sync status'; done()
       Term.reset assert, aFail(@, done)
     aCheck 'crudl term and sync model', test, OK
 
@@ -160,19 +160,19 @@ spec = (Term) ->
     q = limit: 2
     aCheck 'delete term', (done) =>
       assert = (actual) -> expect(actual.id).toBe 1; done()
-      Term.delete q, assert, aFail(@, done)
+      Term.destroy q, assert, aFail(@, done)
 
   it 'deletes an existing term', ->
     q = where: title: terms.GUI.title
     aCheck 'delete term', (done) =>
       assert = (actual) -> expect(actual.id).toBe 3; done()
-      Term.delete q, assert, aFail(@, done)
+      Term.destroy q, assert, aFail(@, done)
 
   it 'fails on delete of an unknown term', ->
     q = where: title: 'unknown'
     aCheck 'delete unknown term', (done) =>
       assert = => @fail 'some term deleted'; done()
-      Term.delete q, assert, (error) ->
+      Term.destroy q, assert, (error) ->
         expect(error).toBeDefined 'an error'
         done()
 

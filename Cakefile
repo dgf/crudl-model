@@ -3,9 +3,9 @@
 jasmineBinary = './node_modules/jasmine-node/bin/jasmine-node'
 
 # ANSI Terminal Colors
-green = '\033[0;32m'
-reset = '\033[0m'
-red = '\033[0;31m'
+green = '\x1b[32m'
+reset = '\x1b[0m'
+red = '\x1b[31m'
 
 log = (message, color) -> console.log color + message + reset
 

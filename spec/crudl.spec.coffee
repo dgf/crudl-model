@@ -171,7 +171,7 @@ spec = (Term) ->
   it 'fails on delete of an unknown term', ->
     q = where: title: 'unknown'
     aCheck 'delete unknown term', (done) =>
-      assert = => @fail 'some term deleted'; done()
+      assert = => aFail(@, done) 'some term deleted'
       Term.destroy q, assert, (error) ->
         expect(error).toBeDefined 'an error'
         done()

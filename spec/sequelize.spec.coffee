@@ -97,5 +97,5 @@ runSpecs = (db) ->
   describe 'model API', -> modelSpec Session
   describe 'database API', -> sequelizeSpec db, Session
 
-xdescribe 'Sequelize MySQL', -> runSpecs dbFactory.createMysqlDb()
+describe 'Sequelize MySQL', -> runSpecs dbFactory.createMysqlDb()
 describe 'Sequelize sqlite3', -> runSpecs dbFactory.createSqliteMemoryDb()

@@ -8,4 +8,4 @@ exports.createSqliteMemoryDb = ->
     storage: ':memory:'
 
 exports.createMysqlDb = ->
-  new Sequelize 'glossary', 'root', '', logging: false
+  new Sequelize 'model_test', 'travis', '', logging: false

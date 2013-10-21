@@ -64,7 +64,7 @@ sequelizeSpec = (db, Session) ->
         done()
 
   it 'executes raw SQL', ->
-    q = 'SELECT distinct upper(left(sid, 4)) as usid FROM ' + Session.tableName
+    q = 'SELECT distinct upper(sid) as usid FROM ' + Session.tableName
     aCheck 'SQL query', (done) =>
       db.query(q, null, raw: true).error(aFail @, done).success (actual) ->
         expect(actual).toBeDefined 'SQL result'
@@ -97,5 +97,5 @@ runSpecs = (db) ->
   describe 'model API', -> modelSpec Session
   describe 'database API', -> sequelizeSpec db, Session
 
-describe 'Sequelize MySQL', -> runSpecs dbFactory.createMysqlDb()
-xdescribe 'Sequelize sqlite3', -> runSpecs dbFactory.createSqliteMemoryDb()
+xdescribe 'Sequelize MySQL', -> runSpecs dbFactory.createMysqlDb()
+describe 'Sequelize sqlite3', -> runSpecs dbFactory.createSqliteMemoryDb()

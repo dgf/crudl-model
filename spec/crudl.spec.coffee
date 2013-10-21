@@ -189,5 +189,5 @@ spec = (Term) ->
 runSpec = (db) ->
   describe 'Sequelize term model', -> spec crudl require('./Term') db
 
-describe 'crudle MySQL', -> runSpec dbFactory.createMysqlDb()
+xdescribe 'crudle MySQL', -> runSpec dbFactory.createMysqlDb()
 describe 'crudle sqlite3', -> runSpec dbFactory.createSqliteMemoryDb()

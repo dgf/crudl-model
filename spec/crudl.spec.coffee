@@ -1,7 +1,7 @@
 Sequelize = require 'sequelize'
 
-{aCheck, aFail} = require './helper/check'
-dbFactory = require './helper/db'
+{aCheck, aFail} = require 'ajsh'
+dbFactory = require './db'
 crudl = require '../src/crudl'
 
 FAST = 20

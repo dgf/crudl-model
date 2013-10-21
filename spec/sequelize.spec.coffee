@@ -1,7 +1,7 @@
 Sequelize = require 'sequelize'
 
-{aCheck, aFail} = require './helper/check'
-dbFactory = require './helper/db'
+{aCheck, aFail} = require 'ajsh'
+dbFactory = require './db'
 
 # test data
 sessions =

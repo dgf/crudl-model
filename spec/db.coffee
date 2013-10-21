@@ -1,4 +1,3 @@
-
 Sequelize = require 'sequelize'
 
 exports.createSqliteMemoryDb = ->

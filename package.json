@@ -21,7 +21,8 @@
     , "underscore": "1.5.x"
   }
   , "devDependencies": {
-      "jasmine-node": "1.11.x"
+      "ajsh": "0.1.x"
+    , "jasmine-node": "1.11.x"
     , "sequelize": "1.5.x"
     , "sqlite3": "2.1.x"
   }

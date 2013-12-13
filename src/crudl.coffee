@@ -17,7 +17,7 @@ class Crudl
       onError 'empty find query'
 
   findAll = (model, options, onSuccess, onError)->
-    model.all(options).error(onError).success (instances) ->
+    model.findAll(options).error(onError).success (instances) ->
       onSuccess _.toArray(instances)
 
   rawQuery = (model, query, onSuccess, onError) ->
@@ -55,7 +55,7 @@ class Crudl
 
   # list all instances
   all: (onSuccess, onError) ->
-    findAll @model, null, onSuccess, onError
+    findAll @model, {}, onSuccess, onError
 
   # list instances
   list: (options, onSuccess, onError) ->
